@@ -45,3 +45,6 @@ pkg_install \
     util-linux \
     ntfs-3g \
     gparted \
+    plymouth \
+    plymouth-scripts \
+    plymouth-plugin-script
