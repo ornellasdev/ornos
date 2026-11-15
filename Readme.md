@@ -6,9 +6,6 @@
 *Construído sobre a solidez do Fedora Atomic, turbinado com todas as otimizações de baixa latência do Nobara e projetado nativamente para Wayland com KDE Plasma 6.*
 
 ---
-
-[![Build OrnOS Image](https://github.com/ornellasdev/ornos/actions/workflows/build.yml/badge.svg)](https://github.com/ornellasdev/ornos/actions/workflows/build.yml)
-[![Build OrnOS Bootable ISO](https://github.com/ornellasdev/ornos/actions/workflows/build-iso.yml/badge.svg)](https://github.com/ornellasdev/ornos/actions/workflows/build-iso.yml)
 [![Fedora Base](https://img.shields.io/badge/Fedora%20Atomic-41-blue?logo=fedora)](https://fedoraproject.org/)
 [![Desktop](https://img.shields.io/badge/Desktop-KDE%20Plasma%206-teal?logo=kde)](https://kde.org/plasma-desktop/)
 [![Platform](https://img.shields.io/badge/Arch-x86__64-orange)](#)
