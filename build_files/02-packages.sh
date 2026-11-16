@@ -5,7 +5,7 @@ echo ":: [OrnOS] Instalando pacotes Gamer, Multimídia e Low-Latency ::"
 
 pkg_install() {
     if command -v dnf5 &> /dev/null; then
-        dnf5 -y install "$@"
+        dnf5 -y install --skip-unavailable "$@"
     else
         rpm-ostree install "$@"
     fi
@@ -24,25 +24,10 @@ pkg_install \
     vkBasalt \
     goverlay \
     steam-devices \
-    openrgb-udev-rules \
-    libratbag-ratbagd \
     piper \
-    oversteer \
-    scx-scheds \
     irqbalance \
     obs-studio \
     obs-vkcapture \
-    obs-vkcapture.i686 \
-    v4l2loopback \
-    distrobox \
-    nvtop \
     btop \
     fastfetch \
-    jq \
-    just \
-    kdialog \
-    os-prober \
-    util-linux \
-    ntfs-3g \
-    gparted 
-  
+    gparted
