@@ -44,7 +44,5 @@ pkg_install \
     os-prober \
     util-linux \
     ntfs-3g \
-    gparted \
-    plymouth \
-    plymouth-scripts \
-    plymouth-plugin-script
+    gparted 
+  
