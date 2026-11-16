@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Central OrnOS
+Comment=Configurar discos extras, codecs e aplicativos recomendados
+Exec=/usr/bin/bash -c "rm -f $HOME/.config/ornos-first-setup.done && /usr/bin/ornos-first-setup"
+Icon=preferences-desktop-gaming
+Terminal=false
+Categories=System;Settings;

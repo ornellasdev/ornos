@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=OrnOS
+Description=OrnOS neon purple-to-cyan boot theme
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/ornOS/images
+ScriptFile=/usr/share/plymouth/themes/ornOS/ornOS.script

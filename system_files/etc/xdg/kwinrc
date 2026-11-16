@@ -1,0 +1,16 @@
+[Compositing]
+AllowTearing=true
+LatencyPolicy=Low
+AnimationSpeed=2
+
+[Wayland]
+EnablePrimarySelection=true
+VirtualKeyboardEnabled=false
+
+[Windows]
+Placement=Centered
+BorderlessMaximizedWindows=false
+
+[EdgeBarrier]
+EdgeBarrier=0
+CornerBarrier=false

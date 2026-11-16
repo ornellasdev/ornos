@@ -1,0 +1,15 @@
+# Permissão para jogos/Proton e GameMode controlarem a latência DMA do CPU
+KERNEL=="cpu_dma_latency", MODE="0660", GROUP="wheel", TAG+="uaccess"
+
+# Permissão de leitura de energia do CPU (Intel/AMD RAPL) para o MangoHud exibir o consumo em Watts (W)
+SUBSYSTEM=="powercap", KERNEL=="intel-rapl:*", ATTR{energy_uj}=="*", MODE="0444"
+
+# Escalonador I/O ideal por tipo de armazenamento:
+# NVMe -> 'none' (acesso direto sem fila de software)
+ACTION=="add|change", KERNEL=="nvme[0-9]*n[0-9]*", ATTR{queue/scheduler}="none"
+
+# SSD SATA / eMMC -> 'kyber' (baixa latência de leitura)
+ACTION=="add|change", KERNEL=="sd[a-z]|mmcblk[0-9]*", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="kyber"
+
+# HD Mecânico (Rotacional) -> 'bfq' (evita travamentos do sistema em leituras pesadas)
+ACTION=="add|change", KERNEL=="sd[a-z]", ATTR{queue/rotational}=="1", ATTR{queue/scheduler}="bfq"

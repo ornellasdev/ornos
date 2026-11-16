@@ -1,0 +1,55 @@
+name: Build OrnOS Bootable ISO
+
+on:
+  workflow_dispatch:
+  # Dispara automaticamente quando você publicar uma nova Release pelo GitHub
+  release:
+    types: [published]
+  # Dispara automaticamente após a imagem base (build.yml) compilar com sucesso
+  workflow_run:
+    workflows: ["Build OrnOS Image"]
+    types:
+      - completed
+
+jobs:
+  build-iso:
+    name: Generate Bootable ISO
+    # Garante que, se veio do workflow_run, só rode se o build anterior tiver dado sucesso
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: read
+
+    steps:
+      - name: Free Disk Space
+        uses: ublue-os/remove-unwanted-software@v7
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build OrnOS Installer ISO
+        uses: jasonn3/build-container-installer@v1.2.4
+        with:
+          arch: x86_64
+          image_name: ornos
+          image_repo: ghcr.io/${{ github.repository_owner }}
+          image_tag: latest
+          version: 44
+          iso_name: OrnOS-KDE-NVIDIA-x86_64.iso
+
+      - name: Upload ISO to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.release.tag_name || 'latest-iso' }}
+          name: ${{ github.event.release.name || 'OrnOS KDE (Latest ISO)' }}
+          body: ${{ github.event.release.body || 'Build automatizada do OrnOS com kernel otimizado, tweaks Nobara e stack NVIDIA pré-integrada.' }}
+          files: |
+            OrnOS-KDE-NVIDIA-x86_64.iso
+            OrnOS-KDE-NVIDIA-x86_64.iso-CHECKSUM
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

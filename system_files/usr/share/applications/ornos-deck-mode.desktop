@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=OrnOS Console Mode (Steam Deck UI)
+Comment=Inicia a interface de console da Steam acelerada por Gamescope e GameMode
+Exec=/usr/bin/ornos-deck-session
+Icon=steam
+Terminal=false
+Categories=Game;

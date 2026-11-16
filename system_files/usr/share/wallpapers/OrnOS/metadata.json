@@ -1,0 +1,12 @@
+{
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "OrnOS Project"
+            }
+        ],
+        "Id": "OrnOS",
+        "License": "CC-BY-SA-4.0",
+        "Name": "OrnOS Official Neon"
+    }
+}

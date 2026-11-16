@@ -1,18 +1,20 @@
-ARG BASE_IMAGE=ghcr.io/ublue-os/kinoite-nvidia
-ARG IMAGE_TAG=latest
+# 1. Imagem Base (Universal Blue Kinoite com drivers NVIDIA integrados)
+FROM ghcr.io/ublue-os/kinoite-nvidia:latest
 
-FROM ${BASE_IMAGE}:${IMAGE_TAG}
+# 2. Metadados OCI e identificação de sistema bootc/ostree
+LABEL org.opencontainers.image.title="OrnOS" \
+      org.opencontainers.image.description="OrnOS Gaming Edition - Distro Linux imutável focada em baixa latência, jogos e suporte NVIDIA" \
+      org.opencontainers.image.source="https://github.com/ornellasdev/ornos" \
+      org.opencontainers.image.vendor="OrnOS Project" \
+      containers.bootc="1"
 
-LABEL org.opencontainers.image.title="OrnOS"
-LABEL org.opencontainers.image.description="OrnOS: Fedora Atomic KDE Plasma com otimizações Nobara e suporte NVIDIA"
-
-# 1. Injeta arquivos de tuning do sistema e atalhos ujust
+# 3. Copia os ficheiros estáticos do sistema (etc/ e usr/) para a raiz da imagem
 COPY system_files/ /
 
-# 2. Copia os scripts de automação para /tmp
+# 4. Copia os scripts de compilação para o diretório temporário
 COPY build_files/ /tmp/build_files/
 
-# 3. Executa a instalação completa e limpeza em camada única
+# 5. Camada Única de Compilação, Configuração, Initramfs, Limpeza e Commit OSTree
 RUN chmod +x /tmp/build_files/*.sh && \
     /tmp/build_files/01-repos-and-copr.sh && \
     /tmp/build_files/02-packages.sh && \

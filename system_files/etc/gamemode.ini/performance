@@ -1,0 +1,13 @@
+[general]
+renice=10
+ioprio=0
+inhibit_screensaver=1
+
+[cpu]
+park_cores=no
+pin_cores=yes
+
+[gpu]
+apply_gpu_optimisations=accept-responsibility
+gpu_device=0
+nv_powermizer_mode=1

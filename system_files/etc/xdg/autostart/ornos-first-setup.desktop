@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=OrnOS First Setup
+Comment=Assistente de configuração inicial do OrnOS
+Exec=/usr/bin/ornos-first-setup
+Icon=preferences-system
+Terminal=false
+Categories=System;
+X-KDE-autostart-after=panel
