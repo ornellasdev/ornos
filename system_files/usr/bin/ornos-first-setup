@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+set -e
+
+FLAG_FILE="$HOME/.config/ornos-first-setup.done"
+
+# Se já rodou antes, não executa novamente
+if [ -f "$FLAG_FILE" ]; then
+    exit 0
+fi
+
+# 1. Boas-Vindas
+kdialog --title "OrnOS - Bem-vindo!" --msgbox "Bem-vindo ao OrnOS!\n\nVamos preparar seu computador com as melhores configurações de desempenho para jogos e produtividade."
+
+# 2. Detecção de Hardware
+CPU_MODEL=$(lscpu | grep "Model name:" | sed 's/Model name:[ \t]*//')
+RAM_TOTAL=$(free -h | awk '/^Mem:/ {print $2}')
+GPU_INFO=$(lspci | grep -iE 'vga|3d' | cut -d ':' -f3 | sed 's/^[ \t]*//')
+
+kdialog --title "OrnOS - Hardware Detectado" --msgbox "Identificamos o seguinte hardware no seu sistema:\n\n• Processador: $CPU_MODEL\n• Memória RAM: $RAM_TOTAL\n• Placa de Vídeo: $GPU_INFO\n\nVamos aplicar as otimizações recomendadas automaticamente."
+
+# 3. Criação de Pastas Otimizadas para Jogos
+if kdialog --title "OrnOS - Biblioteca de Jogos" --yesno "Deseja criar automaticamente as pastas otimizadas para jogos e emuladores na sua pasta pessoal?"; then
+    mkdir -p "$HOME/Games/SteamLibrary"
+    mkdir -p "$HOME/Games/Heroic"
+    mkdir -p "$HOME/Games/Lutris"
+    mkdir -p "$HOME/Games/Emuladores/ROMS"
+    kdialog --title "OrnOS" --msgbox "Pastas criadas com sucesso em: $HOME/Games"
+fi
+
+# 4. Detecção e Montagem de Discos Secundários
+DISCOS_EXTRAS=$(lsblk -rnpo NAME,SIZE,TYPE,MOUNTPOINT,FSTYPE | awk '$3=="part" && $4=="" && ($5=="ext4" || $5=="btrfs" || $5=="ntfs") {print $1 " (" $2 ", " $5 ")"}')
+
+if [ -n "$DISCOS_EXTRAS" ]; then
+    IFS=$'\n' read -r -d '' -a LISTA_DISCOS <<< "$DISCOS_EXTRAS" || true
+    DISCO_ESCOLHIDO=$(kdialog --title "OrnOS - Armazenamento Extra" \
+        --combobox "Encontramos discos não montados. Deseja configurar algum como disco extra de jogos/dados?" "${LISTA_DISCOS[@]}") || true
+    
+    if [ -n "$DISCO_ESCOLHIDO" ]; then
+        PARTICAO=$(echo "$DISCO_ESCOLHIDO" | awk '{print $1}')
+        PONTO_MONTAGEM="/var/mnt/Armazenamento"
+        
+        # Cria diretório e adiciona ao fstab via polkit (pede senha amigável)
+        pkexec bash -c "mkdir -p '$PONTO_MONTAGEM' && echo '$PARTICAO $PONTO_MONTAGEM auto nosuid,nodev,nofail,x-gvfs-show 0 0' >> /etc/fstab && mount -a"
+        kdialog --title "OrnOS" --msgbox "Disco montado com sucesso em $PONTO_MONTAGEM e pronto para uso!"
+    fi
+fi
+
+# 5. Verificação de Drivers e Codecs Proprietários
+if kdialog --title "OrnOS - Drivers e Codecs" --yesno "Deseja verificar e baixar os codecs multimídia proprietários e suporte extra a drivers agora?"; then
+    pkexec /usr/bin/ujust install-codecs || true
+fi
+
+# 6. Central de Aplicações Recomendadas (Flatpak)
+ESCOLHAS=$(kdialog --title "OrnOS - Central de Aplicações" \
+    --checklist "Selecione os aplicativos extras que deseja instalar automaticamente:" \
+    "PROTON" "ProtonUp-Qt (Instalar GE-Proton em 1 clique)" on \
+    "HEROIC" "Heroic Games Launcher (Epic Games, GOG e Amazon)" on \
+    "GEARLEVER" "Gear Lever (Integrador automático de AppImages)" on \
+    "FLATSEAL" "Flatseal (Gerenciador visual de permissões Flatpak)" on \
+    "EASYEFFECTS" "EasyEffects (Filtro de ruído e Equalizador de Áudio)" off) || true
+
+if [ -n "$ESCOLHAS" ]; then
+    kdialog --title "OrnOS" --passivepopup "Instalando os aplicativos selecionados em segundo plano..." 8
+    flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo || true
+    
+    [[ $ESCOLHAS == *"PROTON"* ]] && flatpak install -y --noninteractive flathub net.davidotek.pupgui2 || true
+    [[ $ESCOLHAS == *"HEROIC"* ]] && flatpak install -y --noninteractive flathub com.heroicgameslauncher.hgl || true
+    [[ $ESCOLHAS == *"GEARLEVER"* ]] && flatpak install -y --noninteractive flathub it.mijorus.gearlever || true
+    [[ $ESCOLHAS == *"FLATSEAL"* ]] && flatpak install -y --noninteractive flathub com.github.tchx84.Flatseal || true
+    [[ $ESCOLHAS == *"EASYEFFECTS"* ]] && flatpak install -y --noninteractive flathub com.github.wwmm.easyeffects || true
+fi
+
+# Finalização
+mkdir -p "$HOME/.config"
+touch "$FLAG_FILE"
+kdialog --title "OrnOS - Tudo Pronto!" --msgbox "Configuração inicial concluída com sucesso!\n\nAproveite a performance máxima do OrnOS."
