@@ -40,14 +40,16 @@ jobs:
           image_repo: ghcr.io/${{ github.repository_owner }}
           image_tag: latest
           version: 43
+          variant: kinoite
+          image_signed: false
           iso_name: OrnOS-KDE-NVIDIA-x86_64.iso
 
       - name: Upload ISO to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.event.release.tag_name || 'latest-iso' }}
-          name: ${{ github.event.release.name || 'OrnOS KDE (Latest ISO)' }}
-          body: ${{ github.event.release.body || 'Build automatizada do OrnOS com kernel otimizado, tweaks Nobara e stack NVIDIA pré-integrada.' }}
+          tag_name: ${{ github.event.release.tag_name || 'v1.0.0' }}
+          name: ${{ github.event.release.name || 'OrnOS v1.0.0 KDE (Latest ISO)' }}
+          body: ${{ github.event.release.body || 'Build automatizada do OrnOS com kernel otimizado, otimizações NVIDIA e stack KDE Kinoite pré-integrada.' }}
           files: |
             OrnOS-KDE-NVIDIA-x86_64.iso
             OrnOS-KDE-NVIDIA-x86_64.iso-CHECKSUM
