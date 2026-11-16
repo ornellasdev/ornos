@@ -39,7 +39,7 @@ jobs:
           image_name: ornos
           image_repo: ghcr.io/${{ github.repository_owner }}
           image_tag: latest
-          version: 44
+          version: 43
           iso_name: OrnOS-KDE-NVIDIA-x86_64.iso
 
       - name: Upload ISO to GitHub Release
